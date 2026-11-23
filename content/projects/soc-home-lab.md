@@ -8,7 +8,7 @@ links:
   code: "https://github.com/VandanBhuva/home-lab"
 ---
 
-A virtualized security operations environment built to practice the full vulnerability management and detection loop.
+A virtualized security operations environment where I practice vulnerability management and detection end to end.
 
 - **Network segmentation and firewalling** with pfSense.
 - **Vulnerability scanning** with OpenVAS and Nessus, identifying **90+ vulnerabilities** and mapping each to a remediation workflow.

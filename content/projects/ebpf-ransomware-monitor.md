@@ -11,7 +11,7 @@ links:
 
 > Current main focus. This project is under active development.
 
-A Linux endpoint detection and response (EDR) agent that watches process behavior from inside the kernel using eBPF programs attached to Linux Security Module (LSM) hooks. It scores each process on how it behaves rather than on signatures, kills it once the score crosses a threshold, and sends telemetry to a Datadog SIEM.
+A Linux endpoint detection and response (EDR) agent that watches process behavior from inside the kernel using eBPF programs attached to Linux Security Module (LSM) hooks. It scores each process by its behavior instead of matching signatures, kills it once the score crosses a threshold, and sends telemetry to a Datadog SIEM.
 
 ## Results
 
@@ -32,11 +32,11 @@ The scoring engine combines four signals over sliding time windows. One signal o
 
 ## Hardening against evasion
 
-Ransomware can try to hide from the agent or trick it into killing the wrong process. Two changes block that:
+Ransomware can try to hide from the agent or trick it into killing the wrong process. Two changes address this:
 
-- **Binary identity, not names:** the agent records each process's definitive executable identity (device and inode) at `bprm_creds_for_exec` and keeps it in **task-local storage**, Renaming the binary or reusing a PID doesn't change that identity.
-- **Processes started before the agent:** **BPF task iterators** seed state for every process that was already running before the agent loaded.
+- **Binary identity:** at `bprm_creds_for_exec` the agent records each process's executable identity (device and inode) and keeps it in **task-local storage**. Renaming the binary or reusing a PID doesn't change it.
+- **Processes started before the agent:** **BPF task iterators** seed state for every process that was already running when the agent loaded.
 
 ## Performance under load
 
-The kernel-to-user-space event queue uses **kernel-side drop counters** and **per-worker bounds**, When events flood in, the agent drops some and counts them instead of stalling.
+The kernel-to-user-space event queue uses **kernel-side drop counters** and **per-worker bounds**. When events flood in, the agent drops and counts the overflow so it never stalls.

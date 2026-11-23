@@ -10,7 +10,7 @@ stack: ["Applied cryptography", "Function Secret Sharing", "LtHash"]
 
 ## Background
 
-**Function Secret Sharing (FSS)** splits a function into shares held by several evaluators. Each share alone reveals nothing, but together they compute the function. It underpins private information retrieval, private statistics, and anonymous messaging.
+**Function Secret Sharing (FSS)** splits a function into shares held by several evaluators. Each share alone reveals nothing, but together they compute the function. FSS is used in private information retrieval, private statistics, and anonymous messaging.
 
 Those systems need **access control**: evaluators must confirm that a dealer is allowed to touch a function *without learning which function it is*. Servan-Schreiber et al. (IEEE S&P 2023) proposed a private access control list (PACL) for this, but its audit step relies on modular exponentiation, which is expensive.
 

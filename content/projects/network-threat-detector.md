@@ -27,4 +27,4 @@ Legitimate traffic saw **0% false positive impact** while the floods were runnin
 
 ## Telemetry
 
-Alerts are emitted as structured JSON with MITRE ATT&CK mappings, ready to ship into a SIEM. Core detection logic is covered by Go unit tests.
+Alerts go out as structured JSON with MITRE ATT&CK mappings, so a SIEM can ingest them directly. Go unit tests cover the core detection logic.

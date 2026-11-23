@@ -24,14 +24,14 @@ hideDate: true
 {{< /role >}}
 
 {{< role title="Lead Tutor" org="CMU PLUS" when="Current" where="Carnegie Mellon University · Pittsburgh, PA" >}}
-- Facilitate math tutoring sessions and refine tutoring strategies with program supervisors.
+- Run math tutoring sessions and work with program supervisors to improve how we tutor.
 {{< /role >}}
 
 ## Achievements
 
 - **Top 1%** in Huntress CTF 2023 and 2024 (team of two)
 - **Winner**, i.Fest'23 CTF (2023)
-- Built a working exploit for **CVE-2026-113613** (FlexGet path traversal → arbitrary file write → reverse shell). See [offensive security](/projects/offensive-security/).
+- Built a working exploit for **CVE-2026-113613** (a FlexGet path traversal that gives arbitrary file write, chained into a reverse shell). See [offensive security](/projects/offensive-security/).
 
 ## Skills
 
