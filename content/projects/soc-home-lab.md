@@ -1,7 +1,7 @@
 ---
 title: "Vulnerability Management & SOC Home Lab"
 date: 2026-03-01
-weight: 3
+weight: 4
 description: "A virtualized SOC with pfSense segmentation, OpenVAS and Nessus scanning (90+ findings), and Wazuh SIEM/XDR for detection and file integrity monitoring."
 stack: ["pfSense", "Wazuh", "OpenVAS", "Nessus"]
 links:

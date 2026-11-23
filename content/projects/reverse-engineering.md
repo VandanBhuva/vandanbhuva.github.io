@@ -1,7 +1,7 @@
 ---
 title: "Reverse Engineering & Malware Analysis"
 date: 2026-05-01
-weight: 5
+weight: 6
 description: "Reversing position-independent shellcode, deobfuscating it with custom scripts, and building Win32 auditing utilities in C++."
 stack: ["C++", "Win32 API", "x86"]
 ---

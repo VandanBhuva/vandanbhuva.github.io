@@ -1,7 +1,7 @@
 ---
 title: "Systems Engineering: Allocators, Caches & Distributed Consensus"
 date: 2026-04-15
-weight: 7
+weight: 8
 description: "The systems work underneath the security work: a 64-bit malloc, a cache simulator, Raft-replicated key-value and database clusters, and a reflection-based RPC framework."
 stack: ["C", "Go", "Raft"]
 ---

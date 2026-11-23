@@ -11,23 +11,33 @@ hideDate: true
 **Systems:** Introduction to Computer Systems · Distributed Systems · Advanced Real-World Data Networks · Introduction to Embedded Systems
 {{< /role >}}
 
-{{< role title="B.Tech (Honours), Information and Communication Technology · Minor in Computer Science" org="DA-IICT" when="2021 – 2025" where="Dhirubhai Ambani Institute of Information and Communication Technology · Gandhinagar, India" >}}
+{{< role title="B.Tech (Honours), Information and Communication Technology · Minor in Computer Science" org="DA-IICT" when="Sep 2021 – May 2025" where="Dhirubhai Ambani Institute of Information and Communication Technology · Gandhinagar, India" >}}
 **Relevant coursework:** Operating Systems · Computer Networks · Blockchains and Cryptocurrencies · Cloud Computing · High Performance Computing · Database Management Systems · Data Structures · Design and Analysis of Algorithms · Software Engineering
 {{< /role >}}
 
-## Work
+## Experience
 
-{{< todo >}}Your master resume only has projects, so this section is still a placeholder. Your transcript shows a B.Tech research internship (summer 2024) and an industrial training project (winter 2025). Send me the organization, your role, dates, and two to four bullets for each, plus anything else (TA roles, jobs), and I'll fill these in.{{< /todo >}}
-
-{{< role title="Research Intern" org="Organization" when="Summer 2024" where="City, Country" >}}
-- _Placeholder_
+{{< role title="Research Intern" org="DA-IICT" when="May 2024 – Dec 2024" where="Advisor: Dr. Maniklal Das · Gandhinagar, India" >}}
+- Designed an efficient, privacy-preserving access control mechanism for **Function Secret Sharing** using homomorphic hashing, reducing execution time by **~99%** versus the previous implementation.
+- Replaced modular exponentiation with **LtHash** to keep the scheme private while making verification cheap.
+- Co-authored *Computation-Efficient Private Access Control Lists*, accepted as a **poster at IEEE CCNC 2026**. [Read more](/projects/private-access-control-fss/).
 {{< /role >}}
 
-{{< role title="Industrial Training (CS)" org="Organization" when="Winter 2025" where="City, Country" >}}
-- _Placeholder_
+{{< role title="Lead Tutor" org="CMU PLUS" when="Current" where="Carnegie Mellon University · Pittsburgh, PA" >}}
+- Facilitate math tutoring sessions and refine tutoring strategies with program supervisors.
 {{< /role >}}
 
-## Highlights
+## Achievements
 
-- Built a working exploit for **CVE-2026-113613** (FlexGet path traversal → arbitrary file write). See [offensive security](/projects/offensive-security/).
-- Kernel eBPF ransomware detection that preserved **99.2%** of files during a live encryption outbreak. See [the project](/projects/ebpf-ransomware-monitor/).
+- **Top 1%** in Huntress CTF 2023 and 2024 (team of two)
+- **Winner**, i.Fest'23 CTF (2023)
+- Built a working exploit for **CVE-2026-113613** (FlexGet path traversal → arbitrary file write → reverse shell). See [offensive security](/projects/offensive-security/).
+
+## Skills
+
+| | |
+| --- | --- |
+| **Languages** | C, Go, Python, C++, x86/x64 Assembly, Bash, PowerShell, SQL |
+| **Systems** | Linux kernel development, eBPF, XDP/TCX, Linux Security Modules, Unix systems programming |
+| **Reversing & exploitation** | Ghidra, IDA Pro, GDB, x64dbg, Metasploit, Burp Suite, Wireshark |
+| **Infrastructure & observability** | Datadog, Kibana, Snort, Suricata, Git/GitHub |

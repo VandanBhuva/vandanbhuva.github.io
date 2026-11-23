@@ -9,7 +9,8 @@ I like working close to the metal: building detection that runs inside the Linux
 **What I work on**
 
 - **Detection engineering with eBPF:** kernel-level EDR and network threat detection
-- **Offensive security:** exploit development, reverse engineering, penetration testing
+- **Offensive security:** exploit development, reverse engineering, penetration testing, CTFs (top 1% in Huntress CTF 2023 & 2024)
+- **Applied cryptography research:** private access control for Function Secret Sharing (IEEE CCNC 2026 poster)
 - **Secure systems:** low-level C, distributed systems in Go, network security
 
 I'm looking for full-time security engineering roles starting in 2027.

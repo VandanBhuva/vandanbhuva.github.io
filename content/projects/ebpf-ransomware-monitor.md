@@ -3,42 +3,40 @@ title: "eBPF Ransomware Behavior Monitor"
 date: 2026-11-01
 weight: 1
 featured: true
-description: "A Linux EDR agent built on eBPF LSM hooks that detects ransomware by behavior and kills it mid-attack. Preserved 99.2% of files in a 1,000-file encryption outbreak."
-stack: ["C", "Go", "eBPF", "LSM hooks"]
+description: "A Linux EDR agent built on eBPF LSM hooks that detects ransomware by behavior, kills it mid-attack, and streams telemetry to a Datadog SIEM. Over 97% of files preserved against 1,000-file outbreaks."
+stack: ["C", "Go", "eBPF", "LSM", "Linux kernel"]
 links:
   code: "https://github.com/VandanBhuva/ebpf-malware-monitor"
 ---
 
 > Current main focus. This project is under active development.
 
-A Linux endpoint detection and response (EDR) agent that watches process behavior from inside the kernel using eBPF programs attached to Linux Security Module (LSM) hooks. Instead of matching signatures, it scores what a process is *doing* and terminates it while the attack is still in progress.
+A Linux endpoint detection and response (EDR) agent that watches process behavior from inside the kernel using eBPF programs attached to Linux Security Module (LSM) hooks. Instead of matching signatures, it scores what a process is *doing*, terminates it while the attack is still in progress, and streams telemetry to a Datadog SIEM.
 
 ## Results
 
-- **99.2% of files preserved** in a 1,000-file encryption outbreak.
-- **All 4 attack patterns contained** across 12 test runs.
-- **False positives on benign workloads cut from 5 to 1** (`tar`, `dpkg`, `mv`).
-- **16 MB idle memory** for the full agent.
+- **Over 97% of files preserved** against 1,000-file ransomware outbreaks.
+- **Zero false positives** on heavy benign I/O workloads such as `tar` and `gzip`.
+- **~1.4 s maximum latency** under stress tests of 125,000 events per burst.
 
 ## Detection engine
 
-The core is a stateful scoring engine that correlates several weak signals over sliding time windows, so no single noisy indicator triggers a kill on its own:
+A stateful scoring engine correlates several weak signals over sliding time windows, so no single noisy indicator triggers a kill on its own:
 
 - **Write velocity:** how fast a process is rewriting files.
 - **Entropy:** whether written data looks encrypted.
 - **Write-then-delete pairs:** the classic "write encrypted copy, remove original" pattern.
-- **Ransom-note spread:** the same new file appearing across many directories.
+- **Ransom-note spread:** the same new file appearing across **3 or more directories**.
 
-Correlating these is what let the engine tell real ransomware apart from legitimate bulk file operations like archive extraction and package installs.
+Refining the write-delete correlation and requiring ransom notes in several directories is what separated real ransomware from legitimate archive and compression jobs.
 
 ## Hardening against evasion
 
-A detector is only useful if the malware can't sidestep it or turn it against innocent processes. I closed three evasion paths:
+A detector is only useful if malware can't sidestep it or turn it against innocent processes:
 
-1. **Process name spoofing:** a malicious binary renaming itself to look like a trusted tool.
-2. **PID reuse:** tricking the agent into killing an unrelated process that inherited a recycled PID.
-3. **Pre-started malware:** processes that were already running before the agent loaded.
+- **Binary identity, not names:** the agent records each process's definitive executable identity (device and inode) at `bprm_creds_for_exec` and keeps it in **task-local storage**, so renaming a binary or recycling a PID doesn't fool it.
+- **No blind spot at startup:** **BPF task iterators** seed state for every process that was already running before the agent loaded.
 
-The fix was to pin each process to the **SHA-256 identity of its executable** inside the kernel, and to deliver kill signals through **verified pidfds** rather than raw PIDs, so a signal always reaches the process that was actually scored.
+## Performance under load
 
-{{< todo >}}Optional: add an architecture diagram (kernel ↔ user-space data flow), a short demo GIF of a kill mid-encryption, and a "what's next" section.{{< /todo >}}
+The kernel-to-user-space event queue uses **kernel-side drop counters** and **per-worker bounds**, so a flood of events degrades gracefully and measurably instead of stalling detection.

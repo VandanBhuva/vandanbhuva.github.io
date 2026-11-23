@@ -14,11 +14,11 @@ enableRobotsTXT = true
   description = "Security engineer building kernel-level detection with eBPF, exploits, and secure systems. MS Information Security at Carnegie Mellon University."
   tagline = "Security engineer · eBPF detection · exploit development"
   prompt = "vandan@cmu:~$"
-  # PLACEHOLDER: fill these in. Leave a value empty ("") to hide that link.
-  email = ""
+  # Leave a value empty ("") to hide that link.
+  email = "vandanbhuva05@gmail.com"
   github = "https://github.com/VandanBhuva"
-  linkedin = ""
-  resume = ""   # e.g. "/resume.pdf" once you drop the PDF into /static
+  linkedin = "https://www.linkedin.com/in/vandan-bhuva"
+  resume = "/resume.pdf"
 
 [markup.goldmark.renderer]
   unsafe = false

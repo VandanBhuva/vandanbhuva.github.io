@@ -1,7 +1,7 @@
 ---
 title: "Network Security Infrastructure"
 date: 2026-04-01
-weight: 6
+weight: 7
 description: "An enterprise-style PKI with RSA-4096, a token-bucket DDoS rate limiter dropping 90% of malicious traffic, and a raw-socket Go packet sniffer."
 stack: ["C", "Go", "OpenVPN", "PKI"]
 ---
