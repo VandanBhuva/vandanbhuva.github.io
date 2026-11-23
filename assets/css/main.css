@@ -57,7 +57,7 @@ h3 { font-size: 1.08rem; }
 .links { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; font-family: var(--mono); font-size: .9rem; }
 .links a::before { content: "["; color: var(--muted); }
 .links a::after { content: "]"; color: var(--muted); }
-.recent h2 { font-family: var(--mono); font-size: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed var(--border); padding-bottom: .5rem; }
+.recent > h2 { font-family: var(--mono); font-size: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed var(--border); padding-bottom: .5rem; }
 .more { font-size: .82rem; font-weight: 400; }
 
 /* lists */
@@ -100,6 +100,7 @@ pre { padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid var
 /* placeholder callout */
 .todo { border: 1px dashed var(--warn); background: rgba(251,191,36,.06); color: #fde68a; border-radius: 6px; padding: .6rem .9rem; margin: 1rem 0; font-size: .92rem; }
 .todo p { margin: 0; display: inline; }
+.role-body > p:first-child { margin-top: .5rem; }
 .todo-label { font-family: var(--mono); font-size: .72rem; font-weight: 700; background: var(--warn); color: #111; padding: .1rem .4rem; border-radius: 3px; margin-right: .35rem; }
 
 /* pagination */
@@ -116,3 +117,8 @@ pre { padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid var
 .contact { list-style: none; padding: 0; font-family: var(--mono); font-size: .92rem; }
 .contact li { padding: .35rem 0; }
 .contact .muted { display: inline-block; width: 6rem; }
+
+/* featured project */
+.card.featured { border-color: rgba(52,211,153,.45); background: linear-gradient(180deg, rgba(52,211,153,.06), transparent 70%), var(--bg-raised); }
+.badge { display: inline-block; font-family: var(--mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); border: 1px solid rgba(52,211,153,.5); border-radius: 999px; padding: .05rem .55rem; margin: 0 0 .6rem !important; }
+.recent .card { margin-top: 1rem; }

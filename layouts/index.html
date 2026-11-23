@@ -7,6 +7,13 @@
   {{ partial "links.html" . }}
 </section>
 
+{{ with where (where site.RegularPages "Section" "projects") "Params.featured" true }}
+<section class="recent">
+  <h2><span><span class="accent">$</span> cat ~/projects/featured</span> <a class="more" href="{{ "projects/" | relURL }}">all projects →</a></h2>
+  {{ range . }}{{ partial "project-card.html" . }}{{ end }}
+</section>
+{{ end }}
+
 {{ range slice "writeups" "blog" }}
   {{ with site.GetPage (printf "/%s" .) }}
     {{ $pages := first 3 .Pages }}

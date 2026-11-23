@@ -2,4 +2,4 @@
 title: "Projects"
 ---
 
-Security tools, research, and systems I've built.
+Security tooling, detection engineering, and the systems work underneath it.

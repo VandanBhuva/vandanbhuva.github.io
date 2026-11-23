@@ -6,13 +6,7 @@
 {{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
 {{ if eq .Section "projects" }}
   <div class="cards">
-  {{ range .Pages }}
-    <article class="card">
-      <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
-      <p>{{ .Description | default .Summary | plainify | truncate 180 }}</p>
-      {{ with .Params.stack }}<p class="stack">{{ delimit . " · " }}</p>{{ end }}
-    </article>
-  {{ end }}
+  {{ range .Pages.ByWeight }}{{ partial "project-card.html" . }}{{ end }}
   </div>
 {{ else }}
   <ul class="post-list">{{ range .Paginator.Pages }}{{ partial "post-item.html" . }}{{ end }}</ul>

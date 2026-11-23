@@ -4,5 +4,5 @@
     <span class="role-when">{{ .Get "when" }}</span>
   </div>
   {{ with .Get "where" }}<p class="muted role-where">{{ . }}</p>{{ end }}
-  <div class="role-body">{{ .Inner | markdownify }}</div>
+  <div class="role-body">{{ .Inner | .Page.RenderString (dict "display" "block") }}</div>
 </section>
