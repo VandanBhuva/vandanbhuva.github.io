@@ -1,0 +1,21 @@
+{{ define "main" }}
+<header class="page-head">
+  <p class="prompt"><span class="accent">{{ site.Params.prompt }}</span> ls ~/{{ .Section | default (.Title | urlize) }}</p>
+  <h1>{{ .Title }}</h1>
+</header>
+{{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
+{{ if eq .Section "projects" }}
+  <div class="cards">
+  {{ range .Pages }}
+    <article class="card">
+      <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      <p>{{ .Description | default .Summary | plainify | truncate 180 }}</p>
+      {{ with .Params.stack }}<p class="stack">{{ delimit . " · " }}</p>{{ end }}
+    </article>
+  {{ end }}
+  </div>
+{{ else }}
+  <ul class="post-list">{{ range .Paginator.Pages }}{{ partial "post-item.html" . }}{{ end }}</ul>
+  {{ template "_internal/pagination.html" . }}
+{{ end }}
+{{ end }}

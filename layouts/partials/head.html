@@ -1,0 +1,16 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{ $title := cond .IsHome site.Title (printf "%s · %s" .Title site.Title) }}
+<title>{{ $title }}</title>
+{{ $desc := cond .IsHome site.Params.description (.Description | default .Summary | plainify | truncate 160) }}
+<meta name="description" content="{{ $desc | default site.Params.description }}">
+<meta name="color-scheme" content="dark">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $desc | default site.Params.description }}">
+<meta property="og:type" content="{{ cond .IsPage "article" "website" }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<link rel="canonical" href="{{ .Permalink }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230d1117'/><text x='5' y='22' font-family='monospace' font-size='16' fill='%2334d399'>&gt;_</text></svg>">
+{{ with .OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" href="{{ .RelPermalink }}" title="{{ site.Title }}">{{ end }}
+{{ $css := resources.Get "css/main.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">

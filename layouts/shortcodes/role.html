@@ -1,0 +1,8 @@
+<section class="role">
+  <div class="role-head">
+    <h3>{{ .Get "title" }}{{ with .Get "org" }} <span class="muted">@ {{ . }}</span>{{ end }}</h3>
+    <span class="role-when">{{ .Get "when" }}</span>
+  </div>
+  {{ with .Get "where" }}<p class="muted role-where">{{ . }}</p>{{ end }}
+  <div class="role-body">{{ .Inner | markdownify }}</div>
+</section>

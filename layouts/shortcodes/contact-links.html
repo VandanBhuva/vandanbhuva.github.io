@@ -1,0 +1,5 @@
+<ul class="contact">
+  {{ with site.Params.email }}<li><span class="muted">email</span> <a href="mailto:{{ . }}">{{ . }}</a></li>{{ end }}
+  {{ with site.Params.github }}<li><span class="muted">github</span> <a href="{{ . }}">{{ . | replaceRE "^https?://" "" }}</a></li>{{ end }}
+  {{ with site.Params.linkedin }}<li><span class="muted">linkedin</span> <a href="{{ . }}">{{ . | replaceRE "^https?://(www\\.)?" "" }}</a></li>{{ end }}
+</ul>
