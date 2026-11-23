@@ -2,11 +2,11 @@
 title: "Systems Engineering: Allocators, Caches & Distributed Consensus"
 date: 2026-04-15
 weight: 8
-description: "The systems work underneath the security work: a 64-bit malloc, a cache simulator, Raft-replicated key-value and database clusters, and a reflection-based RPC framework."
+description: "Systems projects from coursework: a 64-bit malloc, a cache simulator, Raft-replicated key-value and database clusters, and a reflection-based RPC framework."
 stack: ["C", "Go", "Raft"]
 ---
 
-Security engineering depends on knowing how systems actually behave. These projects are where I built that foundation.
+Systems projects from coursework at CMU, written in C and Go.
 
 ## Dynamic memory allocator (C)
 

@@ -2,4 +2,4 @@
 title: "Projects"
 ---
 
-Security tooling, detection engineering, and the systems work underneath it.
+Detection tools, exploits, research, and some systems coursework.

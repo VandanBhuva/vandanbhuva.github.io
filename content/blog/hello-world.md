@@ -7,4 +7,4 @@ description: "Why this site exists and what I'll write about."
 
 {{< todo >}}Placeholder first post. Edit or delete it.{{< /todo >}}
 
-This is where I'll write about application security, vulnerability research, and the things I learn building secure software.
+I'll post notes here on eBPF, exploit development, and whatever I'm working on.

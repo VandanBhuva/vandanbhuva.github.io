@@ -8,7 +8,7 @@ links:
   code: "https://github.com/VandanBhuva/network-threat-detector"
 ---
 
-An eBPF network monitor attached at the XDP and TCX hooks that detects and mitigates attacks before packets reach the normal network stack.
+An eBPF network monitor on the XDP and TCX hooks. It detects and drops attack traffic before the packets reach the rest of the network stack.
 
 ## Detection coverage
 

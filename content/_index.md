@@ -4,7 +4,7 @@ title: "Vandan Bhuva"
 
 I'm a security engineer finishing my **MS in Information Security at Carnegie Mellon University** (December 2026). Before CMU I earned a **B.Tech (Honours) in Information and Communication Technology, with a minor in Computer Science, from DA-IICT**.
 
-I like working close to the metal: building detection that runs inside the Linux kernel, writing exploits to understand how defenses fail, and engineering the systems that security depends on.
+Most of my work sits in the Linux kernel. I write eBPF programs that catch ransomware and network attacks as they happen, and I write exploits to see where defenses break.
 
 **What I work on**
 

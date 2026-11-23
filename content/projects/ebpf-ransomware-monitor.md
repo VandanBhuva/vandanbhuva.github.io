@@ -11,7 +11,7 @@ links:
 
 > Current main focus. This project is under active development.
 
-A Linux endpoint detection and response (EDR) agent that watches process behavior from inside the kernel using eBPF programs attached to Linux Security Module (LSM) hooks. Instead of matching signatures, it scores what a process is *doing*, terminates it while the attack is still in progress, and streams telemetry to a Datadog SIEM.
+A Linux endpoint detection and response (EDR) agent that watches process behavior from inside the kernel using eBPF programs attached to Linux Security Module (LSM) hooks. It scores each process on how it behaves rather than on signatures, kills it once the score crosses a threshold, and sends telemetry to a Datadog SIEM.
 
 ## Results
 
@@ -21,22 +21,22 @@ A Linux endpoint detection and response (EDR) agent that watches process behavio
 
 ## Detection engine
 
-A stateful scoring engine correlates several weak signals over sliding time windows, so no single noisy indicator triggers a kill on its own:
+The scoring engine combines four signals over sliding time windows. One signal on its own never triggers a kill.
 
 - **Write velocity:** how fast a process is rewriting files.
 - **Entropy:** whether written data looks encrypted.
 - **Write-then-delete pairs:** the classic "write encrypted copy, remove original" pattern.
-- **Ransom-note spread:** the same new file appearing across **3 or more directories**.
+- **Ransom-note spread:** the same new file appearing in 3 or more directories.
 
-Refining the write-delete correlation and requiring ransom notes in several directories is what separated real ransomware from legitimate archive and compression jobs.
+`tar` and `gzip` also write a lot of high-entropy data quickly. Tightening the write-delete check and requiring ransom notes in 3+ directories brought their false positives to zero.
 
 ## Hardening against evasion
 
-A detector is only useful if malware can't sidestep it or turn it against innocent processes:
+Ransomware can try to hide from the agent or trick it into killing the wrong process. Two changes block that:
 
-- **Binary identity, not names:** the agent records each process's definitive executable identity (device and inode) at `bprm_creds_for_exec` and keeps it in **task-local storage**, so renaming a binary or recycling a PID doesn't fool it.
-- **No blind spot at startup:** **BPF task iterators** seed state for every process that was already running before the agent loaded.
+- **Binary identity, not names:** the agent records each process's definitive executable identity (device and inode) at `bprm_creds_for_exec` and keeps it in **task-local storage**, Renaming the binary or reusing a PID doesn't change that identity.
+- **Processes started before the agent:** **BPF task iterators** seed state for every process that was already running before the agent loaded.
 
 ## Performance under load
 
-The kernel-to-user-space event queue uses **kernel-side drop counters** and **per-worker bounds**, so a flood of events degrades gracefully and measurably instead of stalling detection.
+The kernel-to-user-space event queue uses **kernel-side drop counters** and **per-worker bounds**, When events flood in, the agent drops some and counts them instead of stalling.
