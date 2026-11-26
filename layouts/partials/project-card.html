@@ -1,0 +1,6 @@
+<article class="card{{ if .Params.featured }} featured{{ end }}">
+  {{ if .Params.featured }}<p class="badge">currently building</p>{{ end }}
+  <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+  <p>{{ .Description | default .Summary | plainify }}</p>
+  {{ with .Params.stack }}<p class="stack">{{ delimit . " · " }}</p>{{ end }}
+</article>

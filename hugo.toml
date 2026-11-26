@@ -1,0 +1,58 @@
+baseURL = "https://vandanbhuva.github.io/"
+languageCode = "en-us"
+title = "Vandan Bhuva"
+enableRobotsTXT = true
+
+[pagination]
+  pagerSize = 10
+
+[taxonomies]
+  tag = "tags"
+
+[params]
+  # Shown on the home page and in <meta> tags.
+  description = "Security engineer building kernel-level detection with eBPF, exploits, and secure systems. MS Information Security at Carnegie Mellon University."
+  tagline = "Security engineer · eBPF detection · exploit development"
+  prompt = "vandan@cmu:~$"
+  # Leave a value empty ("") to hide that link.
+  email = "vandanbhuva05@gmail.com"
+  github = "https://github.com/VandanBhuva"
+  linkedin = "https://www.linkedin.com/in/vandan-bhuva"
+  resume = "/resume.pdf"
+
+[markup.goldmark.renderer]
+  unsafe = false
+
+[markup.highlight]
+  style = "dracula"
+  noClasses = true
+
+[menus]
+  [[menus.main]]
+    name = "about"
+    pageRef = "/"
+    weight = 1
+  [[menus.main]]
+    name = "experience"
+    pageRef = "/experience"
+    weight = 2
+  [[menus.main]]
+    name = "projects"
+    pageRef = "/projects"
+    weight = 3
+  [[menus.main]]
+    name = "writeups"
+    pageRef = "/writeups"
+    weight = 4
+  [[menus.main]]
+    name = "blog"
+    pageRef = "/blog"
+    weight = 5
+  [[menus.main]]
+    name = "resume"
+    pageRef = "/resume"
+    weight = 6
+  [[menus.main]]
+    name = "contact"
+    pageRef = "/contact"
+    weight = 7

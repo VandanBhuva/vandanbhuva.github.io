@@ -1,0 +1,7 @@
+<ul class="links">
+  {{ with site.Params.email }}<li><a href="mailto:{{ . }}">email</a></li>{{ end }}
+  {{ with site.Params.github }}<li><a href="{{ . }}" rel="me noopener">github</a></li>{{ end }}
+  {{ with site.Params.linkedin }}<li><a href="{{ . }}" rel="me noopener">linkedin</a></li>{{ end }}
+  {{ with site.Params.resume }}<li><a href="{{ . | relURL }}">resume.pdf</a></li>{{ end }}
+  <li><a href="{{ "index.xml" | relURL }}">rss</a></li>
+</ul>

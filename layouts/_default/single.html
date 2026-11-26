@@ -1,0 +1,17 @@
+{{ define "main" }}
+<article>
+  <header class="page-head">
+    <p class="prompt"><span class="accent">{{ site.Params.prompt }}</span> cat ~/{{ with .Section }}{{ . }}/{{ end }}{{ .File.ContentBaseName }}.md</p>
+    <h1>{{ .Title }}</h1>
+    {{ if and .Section (not .Params.hideDate) }}
+    <p class="meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      · {{ .ReadingTime }} min read
+      {{ with .Params.tags }}· <span class="tags">{{ range . }}<a class="tag" href="{{ (printf "/tags/%s/" (. | urlize)) | relURL }}">#{{ . }}</a>{{ end }}</span>{{ end }}
+    </p>
+    {{ end }}
+    {{ with .Params.links }}<p class="meta">{{ range $k, $v := . }}<a href="{{ $v }}">{{ $k }}</a> {{ end }}</p>{{ end }}
+  </header>
+  <div class="prose">{{ .Content }}</div>
+</article>
+{{ end }}
