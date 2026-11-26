@@ -8,7 +8,7 @@ description: "What Meta's SysArmor and BpfJailer talks showed me about my design
 ---
 
 
-I paused the project when the semester started. Coming back to it, I wanted to know how people who run eBPF security at scale design these systems. Two talks from Meta at Linux Plumbers shaped most of what follows: [SysArmor](https://lpc.events/event/17/contributions/1602/) (LPC 2023) and [BpfJailer](https://lpc.events/event/19/contributions/2159/) (LPC 2025). I'd first found the BpfJailer talk while I was stuck on paths ([part 4](/blog/ebpf-build-log-4/)). Since then Meta has open-sourced BpfJailer, and I went back to both talks with my whole design in mind.
+I paused the project when the semester started. Coming back to it, I wanted to know how people who run eBPF security at scale design these systems. Two talks from Meta at Linux Plumbers shaped most of what follows: [SysArmor](https://lpc.events/event/17/contributions/1602/) (LPC 2023) and [BpfJailer](https://lpc.events/event/19/contributions/2159/) (LPC 2025). I'd first found the BpfJailer talk while I was stuck on paths ([part 4](/blog/ebpf-build-log-4/)). Since then Meta has [open-sourced BpfJailer](https://github.com/facebookincubator/bpfjailer), and I went back to both talks with my whole design in mind.
 
 ## SysArmor
 
@@ -82,3 +82,4 @@ The next items were the pipeline itself.
 
 - SysArmor: Meta's eBPF Security Detection and Enforcement Tool, Linux Plumbers 2023: [talk page](https://lpc.events/event/17/contributions/1602/), [video](https://youtu.be/voQMOQ1a7QM?t=22892), [slides](https://lpc.events/event/17/contributions/1602/attachments/1231/2508/SysArmor%20LPC%202023.pdf)
 - BpfJailer: eBPF based Mandatory Access Control, Linux Plumbers 2025: [talk page](https://lpc.events/event/19/contributions/2159/), [video](https://www.youtube.com/watch?v=o78vnXfih8E), [slides](https://lpc.events/event/19/contributions/2159/attachments/1833/3929/BpfJailer%20LPC%202025.pdf)
+- [BpfJailer source code](https://github.com/facebookincubator/bpfjailer)

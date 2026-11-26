@@ -21,7 +21,7 @@ I fixed the first two in other ways: correlation now needs a write that was judg
 
 ## What BpfJailer's code showed me
 
-BpfJailer is open source now, and reading how it resolves paths answered most of what I asked in part 4. It also showed how much effort it takes. Two ideas carried over to my design.
+[BpfJailer is open source](https://github.com/facebookincubator/bpfjailer) now, and reading how it resolves paths answered most of what I asked in part 4. It also showed how much effort it takes. Two ideas carried over to my design.
 
 First, the walk happens in the kernel, inside the hook. Rebuilding a path later, in user space, races with the file system changing underneath you. Walking the dentries at the moment the hook fires gives a consistent answer for the operation being checked.
 
@@ -43,3 +43,4 @@ After paths, the next step is moving more of the processing into the kernel. I'l
 
 - BpfJailer: eBPF based Mandatory Access Control, Linux Plumbers 2025: [talk page](https://lpc.events/event/19/contributions/2159/), [video](https://www.youtube.com/watch?v=o78vnXfih8E), [slides](https://lpc.events/event/19/contributions/2159/attachments/1833/3929/BpfJailer%20LPC%202025.pdf)
 - SysArmor: Meta's eBPF Security Detection and Enforcement Tool, Linux Plumbers 2023: [talk page](https://lpc.events/event/17/contributions/1602/), [video](https://youtu.be/voQMOQ1a7QM?t=22892), [slides](https://lpc.events/event/17/contributions/1602/attachments/1231/2508/SysArmor%20LPC%202023.pdf)
+- [BpfJailer source code](https://github.com/facebookincubator/bpfjailer)
