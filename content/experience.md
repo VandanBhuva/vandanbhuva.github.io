@@ -11,7 +11,7 @@ hideDate: true
 **Systems:** Introduction to Computer Systems · Distributed Systems · Advanced Real-World Data Networks · Introduction to Embedded Systems
 {{< /role >}}
 
-{{< role title="B.Tech (Honours), Information and Communication Technology · Minor in Computer Science" org="DA-IICT" when="Sep 2021 – May 2025" where="Dhirubhai Ambani Institute of Information and Communication Technology · Gandhinagar, India" >}}
+{{< role title="B.Tech (Honours), Information and Communication Technology · Minor in Computational Science" org="DA-IICT" when="Sep 2021 – May 2025" where="Dhirubhai Ambani Institute of Information and Communication Technology · Gandhinagar, India" >}}
 **Relevant coursework:** Operating Systems · Computer Networks · Blockchains and Cryptocurrencies · Cloud Computing · High Performance Computing · Database Management Systems · Data Structures · Design and Analysis of Algorithms · Software Engineering
 {{< /role >}}
 
