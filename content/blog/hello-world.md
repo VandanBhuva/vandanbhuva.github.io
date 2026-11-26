@@ -1,4 +1,5 @@
 ---
+draft: true  # hidden until there is real content
 title: "Hello, world"
 date: 2026-11-23
 tags: ["meta"]
