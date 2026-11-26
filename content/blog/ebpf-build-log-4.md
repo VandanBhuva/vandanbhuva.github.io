@@ -53,7 +53,7 @@ It breaks when it matters most. A process that uses absolute paths, works in oth
 - Send each dentry to user space and rebuild the path there, as in [this Stack Overflow answer](https://stackoverflow.com/questions/79631612/how-can-i-safely-build-the-full-path-of-a-struct-dentry-in-an-ebpf-lsm-hook). It's easier to write, but adds overhead per event and has the race above.
 - Keep a shadow of the file system in user space: listen to directory creation and mount events and keep an in-memory tree in Go, so any dentry can be looked up without asking the OS. It's a lot of state to keep correct.
 
-I'm leaning toward the dentry walk in the kernel, keeping the inode hooks for coverage. For now I'm pausing the project for the semester with the cwd workaround in place, and this as the first thing to fix when I come back.
+I'm leaning toward the dentry walk in the kernel, keeping the inode hooks for coverage. I'm pausing the project for some time, with the cwd workaround in place, and this as the first thing to fix when I come back.
 
 ## Resources
 
