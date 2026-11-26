@@ -7,7 +7,6 @@ tags: ["ebpf", "ring-buffer", "go", "concurrency"]
 description: "Filtering before reserving ring buffer space, stale bytes in records, counting every drop, and keeping each process's events in order."
 ---
 
-*October 27 to 28, 2026.*
 
 The baseline showed the pipeline between the kernel and my scoring code was losing events, reordering them, and timing them wrong. These four fixes came first, each measured against the baseline.
 
@@ -37,13 +36,13 @@ With counting in place, every generated event was either analyzed or counted as 
 
 ## Keep each process's events in order
 
-Two problems came from the worker pool I added in August.
+Two problems came from the worker pool I added in v1.
 
 First, order. 32 workers read one shared channel, so one worker could still be computing a write's entropy while another took the delete that followed it. The delete found no write, and the write-then-delete correlation, which is the signal for "encrypt a copy and delete the original", was missed.
 
 Second, time. Every score used `time.Now()` at processing time. After 10 seconds in a queue, a burst could be spread out and scored as slow, or events far apart could be scored as a burst.
 
-Now each event goes to a fixed worker chosen by `pid % 32`. The PID in the event is the thread group ID, so all threads of a process land on the same worker. Order then comes from the channel's FIFO, each worker owns its processes' state, and the 32 shard mutexes from July are gone. Scores use the kernel timestamp. The single 100,000-slot queue became 32 queues of 3,125, since 100,000 per worker would have been 1.7 GB.
+Now each event goes to a fixed worker chosen by `pid % 32`. The PID in the event is the thread group ID, so all threads of a process land on the same worker. Order then comes from the channel's FIFO, each worker owns its processes' state, and the 32 shard mutexes from v1 are gone. Scores use the kernel timestamp. The single 100,000-slot queue became 32 queues of 3,125, since 100,000 per worker would have been 1.7 GB.
 
 The first live run of this caught a regression I'd created. The entropy check slept 10 ms between retries while waiting for a short file to fill up. With one worker per process, that sleep became something an attacker could use: write 50 small files first, and the worker spends about 2.7 seconds sleeping before it reaches the real encryption. Time to containment went from 60 ms to 2,740 ms. I replaced the sleep with a timer that hands the file back to its worker when it's time to read again, so the worker never sleeps. Containment came back to about 6 ms.
 

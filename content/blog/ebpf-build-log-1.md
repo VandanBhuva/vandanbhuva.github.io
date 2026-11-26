@@ -7,35 +7,39 @@ tags: ["ebpf", "linux", "edr"]
 description: "How I learned eBPF from the eunomia tutorials and got file events out of the kernel into a Go agent."
 ---
 
-This series is how I learned eBPF by building the [eBPF Ransomware Behavior Monitor](/projects/ebpf-ransomware-monitor/), a Linux agent that spots ransomware from what it does to files and stops it mid-attack. It's in the order things happened. The first four parts cover the version I built over the summer. The rest cover what I changed after watching two of Meta's talks on eBPF security in October and realizing how much of that first version was wrong.
+I've been learning eBPF for the past couple of weeks, and I've started a project to learn it properly: a Linux agent that spots ransomware from what it does to files and stops it while it's running. I'm going to write up the project as I go, including the parts where I get things wrong. This first post is about learning the basics and getting file events from the kernel into my own code.
 
-| Part | Dates | What happened |
-| --- | --- | --- |
-| 1. Tutorials to first hooks | Jul | Learned eBPF, got file events into a Go agent |
-| 2. Moving to LSM hooks | Jul 24 | Why syscall tracepoints weren't safe enough |
-| 3. The first detector | Jul 25 to Sep | Scoring, the kill path, a race, and a SIEM |
-| 4. The path problem | Jul to Aug | Rename and unlink hooks couldn't give me full paths |
-| 5. Seeing how Meta does it | Oct 25 to 26 | SysArmor and BpfJailer, a hard review, an honest baseline |
-| 6. Fixing the pipeline | Oct 27 to 28 | Drops, stale bytes, ordering, queue latency |
-| 7. Which process is this? | Oct 30 to Nov 9 | Executable identity, bootstrapping, PID reuse |
-| 8. What was actually written? | Nov 9 to 11 | Content checks, exclusions, renames over files |
-| 9. Measuring phase one | Nov 11 | Re-running the baseline, and what's still open |
-| 10. Back to paths | now | Walking the dentry tree to resolve full paths |
+I'd used eBPF a little before for a small [network threat detector](/projects/network-threat-detector/), but only at the edges. I wanted a bigger security project that went into the file system. Ransomware fits well. Whatever family it is, it has to open a lot of files, overwrite or replace them with encrypted data, and usually rename or delete the originals. That pattern of file activity is exactly what eBPF lets you watch from inside the kernel.
 
-## Learning eBPF first
+## What I learned from the tutorials
 
-I started in early July with no eBPF experience and worked through the eunomia eBPF tutorials: what an eBPF program is, how the kernel loads and verifies it, how maps and ring buffers move data between the kernel and user space, and where programs can attach. I'd used it a little for a small [network threat detector](/projects/network-threat-detector/) and wanted a bigger security project that went into the file system. Ransomware fit. It has a very recognizable pattern of file activity, and watching file activity is what eBPF is good at.
+I worked through the [eunomia eBPF tutorials](https://eunomia.dev/tutorials/), which build up from a hello-world program to real tracing tools. The model I came away with:
+
+- An eBPF program is a small function written in restricted C, compiled by clang into BPF bytecode, and loaded into the kernel with the `bpf()` system call.
+- Before it runs, the kernel's verifier checks it. Every memory access has to be provably in bounds, loops have to be bounded, and the stack is only 512 bytes. If the verifier can't prove the program is safe, it refuses to load it. A lot of eBPF work is learning to write code the verifier can follow.
+- Once verified, the program is JIT-compiled and attached to a hook: a tracepoint, a kprobe on a kernel function, a network hook, or a security hook. It runs every time that hook fires, in the context of whatever process triggered it.
+- Programs can't do much on their own. They call a fixed set of helper functions (read the current PID, read kernel or user memory, get a timestamp) and keep state in maps: hash tables, arrays and per-CPU arrays that user space can read and write too.
+- To get a stream of events out, you use a ring buffer or a perf buffer. Both carry records from the kernel to a user-space reader.
+- BTF is type information the kernel exports about its own structs. With it you can generate a `vmlinux.h` header that has every kernel type, so a BPF program can read fields of kernel structures without kernel headers installed.
 
 ## The plumbing
 
-Before any detection logic I needed a toolchain: a `vmlinux.h` generated from the running kernel's BTF so my C code could use kernel types, and a repeatable way to compile and load a BPF program.
+Before any detection logic I needed the toolchain working end to end: `bpftool` dumping the running kernel's BTF into `vmlinux.h`, clang building the BPF object, and a loader in user space.
 
-For hooks I started with syscall tracepoints, the easiest way to see file activity while I was still learning.
+For hooks I started with syscall tracepoints, since they were the easiest way to see file activity while I was still learning. The first program attached to `sys_enter_openat` and reported every open, with the process ID, its command name, and the filename. The filename is a pointer into the calling process's memory, so the program copies it with `bpf_probe_read_user_str` into a fixed-size buffer in the event. I added `sys_enter_renameat2` next, since ransomware renames files as much as it writes them.
 
-- Jul 18: tracepoints on `sys_enter_openat`, then `sys_enter_renameat2`, to see files being modified.
-- Jul 19: a BPF ring buffer to carry events to user space. It's shared across CPUs, keeps events in order, and lets the kernel side reserve space for a record and fill it in place instead of copying it.
-- Jul 20: a Go agent using `bpf2go`, which generates Go bindings for the BPF objects so the agent can load the program and read the ring buffer without hand-written glue.
+To move events to user space I used a BPF ring buffer rather than a perf buffer. A perf buffer is one buffer per CPU, so events from different CPUs arrive separately and can come out of order. The ring buffer is one buffer shared by all CPUs, keeps events in order, and lets the program reserve space for a record, fill it in place and submit it, with no extra copy.
+
+For the user-space side I chose Go, using `bpf2go` from the cilium/ebpf library. It compiles the C program and generates Go code with typed handles for every program and map in it, so the agent can load the object, attach the hooks and read the ring buffer without hand-written glue. Each record is a fixed-layout C struct, and the Go side decodes it into a matching Go struct.
 
 ## First bug
 
-The first real bug was string handling. Filenames come across as fixed-size C arrays, and Go printed the whole array, including whatever bytes sat after the null terminator. Parsing up to the terminator fixed it. A cousin of this bug came back in October on the kernel side, where the records themselves were carrying stale bytes ([part 6](/blog/ebpf-build-log-6/)).
+The first real bug was in string handling. Filenames come across as fixed-size C char arrays, and Go printed the whole array, including whatever bytes sat after the null terminator, so names had junk on the end. The fix was to cut each string at the first zero byte when decoding. It was a small bug, but it taught me to think of an event as raw bytes with a layout, not as the strings I wanted it to be.
+
+## Where this leaves me
+
+I now have a pipeline from a kernel hook to a Go program. What I don't have is confidence that tracepoints are the right hooks for a security tool. That's the next post.
+
+## Resources
+
+- [eunomia eBPF tutorials](https://eunomia.dev/tutorials/): the tutorials I learned from, from hello world up to ring buffers and LSM programs.

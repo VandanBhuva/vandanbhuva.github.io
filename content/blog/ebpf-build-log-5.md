@@ -7,9 +7,8 @@ tags: ["ebpf", "edr", "testing", "benchmarking"]
 description: "What Meta's SysArmor and BpfJailer talks showed me about my design, a hard review of v1, and an honest baseline before changing anything."
 ---
 
-*October 25 to 26, 2026.*
 
-I paused the project in August for the fall semester. When I came back in late October I wanted to know how people who run eBPF security at scale design these systems, so I watched two talks from Meta at Linux Plumbers: SysArmor (LPC 2023) and BpfJailer (LPC 2025, by Liam Wisehart).
+I paused the project when the semester started. Coming back to it, I wanted to know how people who run eBPF security at scale design these systems. Two talks from Meta at Linux Plumbers shaped most of what follows: [SysArmor](https://lpc.events/event/17/contributions/1602/) (LPC 2023) and [BpfJailer](https://lpc.events/event/19/contributions/2159/) (LPC 2025). I'd first found the BpfJailer talk while I was stuck on paths ([part 4](/blog/ebpf-build-log-4/)). Since then Meta has open-sourced BpfJailer, and I went back to both talks with my whole design in mind.
 
 ## SysArmor
 
@@ -42,7 +41,7 @@ My LSM hooks always returned 0, so I was using the most security-relevant hook t
 
 There's a real difference I didn't want to paper over, though. BpfJailer applies a known policy to processes chosen in advance. My detector has to judge processes it knows nothing about, which is harder and will always produce more false positives.
 
-The talk also mentioned they had run into the same path resolution problem I'd been stuck on since August ([part 4](/blog/ebpf-build-log-4/)), which made me feel better about it.
+The open-source release also answered most of my path question from part 4: reading how BpfJailer matches and resolves paths showed me the approach, and how much work it takes. I'm leaving that until the basics below are fixed.
 
 ## Reviewing v1 like an attacker
 
@@ -56,9 +55,9 @@ Then I read my README again. It claimed "zero-allocation", "instant containment"
 
 Before changing anything I tagged the code as it was (`baseline`) and checked it built from a clean clone, so every number afterwards is a diff against a known commit.
 
-My August benchmarks turned out to measure the wrong things. "Events per second" counted events entering the queue, not events analyzed. With metrics enabled, the stress directory was excluded from analysis, so the expensive part never ran. The ~35,000 "peak" was the speed of the Python load generator itself, which does about 34,000 ops/s with no agent running. The "15% CPU peak" was a lifetime average from `ps`; measured per interval it peaked at 172%.
+My v1 benchmarks turned out to measure the wrong things. "Events per second" counted events entering the queue, not events analyzed. With metrics enabled, the stress directory was excluded from analysis, so the expensive part never ran. The ~35,000 "peak" was the speed of the Python load generator itself, which does about 34,000 ops/s with no agent running. The "15% CPU peak" was a lifetime average from `ps`; measured per interval it peaked at 172%.
 
-I rebuilt the harness with a dry-run mode that logs "would contain" instead of signalling, so throughput can be measured without the agent killing its own load generator, and measured detection separately with containment on. On October 25:
+I rebuilt the harness with a dry-run mode that logs "would contain" instead of signalling, so throughput can be measured without the agent killing its own load generator, and measured detection separately with containment on. The baseline:
 
 - Detection on my own simulations: 12 of 12 runs contained, 96.7 to 99.4% of files preserved, median 1.7 to 70 ms to containment.
 - False positives: `tar` extraction with a README 3 of 3, temp-file churn 3 of 3, gzip of 8 files 1 of 1.
@@ -78,3 +77,8 @@ The README. I rewrote it so every number has a measurement behind it, and restor
 Shutdown. Making Ctrl+C drain the queue looked like one WaitGroup. But containment ran in its own goroutine, so a Ctrl+C at the wrong moment could leave a process frozen by `SIGSTOP` forever with no forensic record. Shutdown now waits for those too. I also replaced a log line per dropped event (extra work exactly when the agent is overloaded) with a once-a-second summary.
 
 The next items were the pipeline itself.
+
+## Resources
+
+- SysArmor: Meta's eBPF Security Detection and Enforcement Tool, Linux Plumbers 2023: [talk page](https://lpc.events/event/17/contributions/1602/), [video](https://youtu.be/voQMOQ1a7QM?t=22892), [slides](https://lpc.events/event/17/contributions/1602/attachments/1231/2508/SysArmor%20LPC%202023.pdf)
+- BpfJailer: eBPF based Mandatory Access Control, Linux Plumbers 2025: [talk page](https://lpc.events/event/19/contributions/2159/), [video](https://www.youtube.com/watch?v=o78vnXfih8E), [slides](https://lpc.events/event/19/contributions/2159/attachments/1833/3929/BpfJailer%20LPC%202025.pdf)
