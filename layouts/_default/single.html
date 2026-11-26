@@ -12,6 +12,8 @@
     {{ end }}
     {{ with .Params.links }}<p class="meta">{{ range $k, $v := . }}<a href="{{ $v }}">{{ $k }}</a> {{ end }}</p>{{ end }}
   </header>
+  {{ partial "series-nav.html" . }}
   <div class="prose">{{ .Content }}</div>
+  {{ partial "series-nav.html" . }}
 </article>
 {{ end }}
