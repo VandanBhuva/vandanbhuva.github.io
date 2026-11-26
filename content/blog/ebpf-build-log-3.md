@@ -45,7 +45,7 @@ Every event, score change and containment step became one JSON line, and I shipp
 
 ## Open questions
 
-The semester is starting, so I'm pausing the project here. These are the questions I'm leaving myself:
+These are the questions I still have about this version:
 
 - Filter in the kernel or in user space? Filtering in the kernel saves the trip across, but string matching under the BPF verifier is painful, and my threat engine lives in user space where the kernel can't see it. There was also a difference in what each side can do: returning `-EPERM` from a hook blocks one operation, while a kill from user space stops the whole process.
 - Entropy timing. The workers waited a fixed time for data to land in a file before measuring it. A process that waits out that window and then writes gets past it. My idea was to measure when the file is closed, from the `file_release` hook, or while the data is being written.
@@ -53,3 +53,8 @@ The semester is starting, so I'm pausing the project here. These are the questio
 - `path_rename` or `inode_rename`? That one gets its own post.
 
 I want to come back to all four.
+
+## Resources
+
+- [Palo Alto Networks: a different view on encrypting ransomware](https://www.paloaltonetworks.com/blog/2015/01/different-view-understand-prevent-encrypting-ransomware/): how ransomware behaves at the file system level, which is what this detector scores.
+- [Adaptive Security: ransomware detection](https://www.adaptivesecurity.com/blog/ransomware-detection): an overview of detection approaches, from signatures to behavior.

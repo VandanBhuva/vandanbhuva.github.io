@@ -8,7 +8,7 @@ description: "What Meta's SysArmor and BpfJailer talks showed me about my design
 ---
 
 
-I paused the project when the semester started. Coming back to it, I wanted to know how people who run eBPF security at scale design these systems. Two talks from Meta at Linux Plumbers shaped most of what follows: [SysArmor](https://lpc.events/event/17/contributions/1602/) (LPC 2023) and [BpfJailer](https://lpc.events/event/19/contributions/2159/) (LPC 2025). I'd first found the BpfJailer talk while I was stuck on paths ([part 4](/blog/ebpf-build-log-4/)). Since then Meta has [open-sourced BpfJailer](https://github.com/facebookincubator/bpfjailer), and I went back to both talks with my whole design in mind.
+I'd paused the project for a while. Coming back to it, I wanted to know how people who run eBPF security at scale design these systems. Two talks from Meta at Linux Plumbers shaped most of what follows: [SysArmor](https://lpc.events/event/17/contributions/1602/) (LPC 2023) and [BpfJailer](https://lpc.events/event/19/contributions/2159/) (LPC 2025). I'd first found the BpfJailer talk while I was stuck on paths ([part 4](/blog/ebpf-build-log-4/)). Since then Meta has [open-sourced BpfJailer](https://github.com/facebookincubator/bpfjailer), and I went back to both talks with my whole design in mind.
 
 ## SysArmor
 
@@ -29,7 +29,7 @@ BpfJailer is Meta's eBPF LSM based mandatory access control and jailing system. 
 
 Putting it next to mine was uncomfortable:
 
-| | My monitor | BpfJailer |
+| Aspect | My monitor | BpfJailer |
 | --- | --- | --- |
 | Model | Detection: observe, score, react afterwards | Prevention: define what a jailed process may do |
 | LSM return value | Always 0 | Denies, synchronously |
@@ -48,8 +48,6 @@ The open-source release also answered most of my path question from part 4: read
 With all that in mind I went through my own agent the way someone trying to get past it would. The list was long. Real ransomware could avoid it by encrypting files in place, by replacing originals with a rename instead of a delete, by giving itself a trusted process name, by working in file types or directories I'd excluded, or by flooding or stalling the agent so its own events got lost. On the other side, it would kill legitimate tools: `tar` and package installs (anything that wrote a file called README), `gzip` and logrotate, and normal temp-file churn.
 
 There were pipeline bugs too. Per-process event order was lost across workers. The kernel's event timestamp was captured but never used. Containment was keyed by PID, which Linux reuses. Kernel drops were invisible.
-
-Then I read my README again. It claimed "zero-allocation", "instant containment", "zero telemetry loss", and "protecting the OS from kernel panics" (a full ring buffer just makes reserve fail; nothing panics). I couldn't back most of it.
 
 ## An honest baseline
 

@@ -33,3 +33,8 @@ Write-then-delete correlation still pairs files by name. Ransomware that gives i
 The bigger ideas from BpfJailer are still ahead: denying writes in the kernel for a process that's already scored HIGH instead of waiting to kill it, and protecting the agent itself. Right now, anyone with root can stop it.
 
 And the path problem from v1 was still there. Rename and unlink events still carried basenames joined to the process's working directory. It caused the churn false positive, the gnome-shell kill, and log lines that named the wrong directory. That's next, and after it, moving more of the processing into the kernel.
+
+## Resources
+
+- [Rethinking ransomware defense at the filesystem layer](https://hackernoon.com/rethinking-ransomware-defense-at-the-filesystem-layer)
+- [Ransomware recovery at the filesystem layer](https://hackernoon.com/ransomware-recovery-at-the-filesystem-layer)
