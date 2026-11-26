@@ -41,14 +41,6 @@ enableRobotsTXT = true
     pageRef = "/projects"
     weight = 3
   [[menus.main]]
-    name = "writeups"
-    pageRef = "/writeups"
-    weight = 4
-  [[menus.main]]
-    name = "blog"
-    pageRef = "/blog"
-    weight = 5
-  [[menus.main]]
     name = "resume"
     pageRef = "/resume"
     weight = 6

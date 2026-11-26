@@ -1,4 +1,5 @@
 ---
+draft: true  # hidden until there is real content
 title: "Example CTF: Format string to shell"
 date: 2026-11-10
 tags: ["ctf", "pwn", "placeholder"]
