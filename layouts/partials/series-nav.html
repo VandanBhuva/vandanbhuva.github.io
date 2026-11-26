@@ -6,7 +6,7 @@
     <ol>
     {{ range $parts.ByWeight }}
       {{ if le .Weight $current.Weight }}
-      <li>{{ if eq . $current }}<span aria-current="page">{{ .Title | replaceRE "^.*?part \\d+: " "" }}</span>{{ else }}<a href="{{ .RelPermalink }}">{{ .Title | replaceRE "^.*?part \\d+: " "" }}</a>{{ end }}</li>
+      <li>{{ if eq . $current }}<span aria-current="page">{{ .Title }}</span>{{ else }}<a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}</li>
       {{ end }}
     {{ end }}
     </ol>

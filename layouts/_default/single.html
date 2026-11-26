@@ -2,6 +2,7 @@
 <article>
   <header class="page-head">
     <p class="prompt"><span class="accent">{{ site.Params.prompt }}</span> cat ~/{{ with .Section }}{{ . }}/{{ end }}{{ .File.ContentBaseName }}.md</p>
+    {{ partial "series-label.html" . }}
     <h1>{{ .Title }}</h1>
     {{ if and .Section (not .Params.hideDate) }}
     <p class="meta">

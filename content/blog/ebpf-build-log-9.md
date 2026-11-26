@@ -1,5 +1,5 @@
 ---
-title: "Learning eBPF by building a ransomware detector, part 9: measuring phase one"
+title: "Measuring the first round of fixes"
 date: 2026-11-11T19:00:00-05:00
 weight: 9
 series: "ebpf-build-log"

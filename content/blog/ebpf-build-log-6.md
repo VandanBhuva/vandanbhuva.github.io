@@ -1,5 +1,5 @@
 ---
-title: "Learning eBPF by building a ransomware detector, part 6: fixing the pipeline"
+title: "Fixing the pipeline from kernel to user space"
 date: 2026-10-28T18:00:00-04:00
 weight: 6
 series: "ebpf-build-log"

@@ -1,5 +1,5 @@
 ---
-title: "Learning eBPF by building a ransomware detector, part 5: seeing how Meta does it"
+title: "What Meta's SysArmor and BpfJailer showed me"
 date: 2026-10-26T18:00:00-04:00
 weight: 5
 series: "ebpf-build-log"

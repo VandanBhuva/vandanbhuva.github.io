@@ -1,5 +1,5 @@
 ---
-title: "Learning eBPF by building a ransomware detector, part 3: the first detector"
+title: "Building the first detector"
 date: 2026-09-08T18:00:00-04:00
 weight: 3
 series: "ebpf-build-log"
