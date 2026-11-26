@@ -7,7 +7,6 @@ tags: ["ebpf", "linux", "lsm", "edr"]
 description: "Why syscall tracepoints and kprobes weren't a safe base for a security tool, and what BPF LSM hooks give you instead."
 ---
 
-*July 24, 2026.*
 
 ## Why tracepoints weren't enough
 
@@ -19,11 +18,11 @@ Syscalls also aren't the only way into a file operation. `openat2` and io_uring 
 
 And a tracepoint can only observe. If I ever wanted to block an operation instead of reacting to it, I'd need a hook that can return an error.
 
-I had planned to use kprobes on internal kernel functions for some of this, but I never did. Those functions have no stable interface and can change between kernel versions, which is a bad property for something meant to run on many machines.
+I'd planned to use kprobes on internal kernel functions for some of this, but decided against it. Those functions have no stable interface and can change between kernel versions, which is a bad property for something meant to run on many machines.
 
 ## LSM hooks
 
-On July 24 I moved to BPF LSM hooks: `file_open`, `inode_rename` and `inode_unlink`. The Linux Security Module hooks are the points where the kernel asks "should this be allowed?" They run inside the VFS after the kernel has copied the arguments in and resolved them to its own objects (a `struct file`, a dentry, an inode). That gave me three things at once:
+So I moved to BPF LSM hooks: `file_open`, `inode_rename` and `inode_unlink`. The Linux Security Module hooks are the points where the kernel asks "should this be allowed?" They run inside the VFS after the kernel has copied the arguments in and resolved them to its own objects (a `struct file`, a dentry, an inode). That gave me three things at once:
 
 - the user-memory race is gone, because I read kernel objects, not user pointers;
 - every path into the operation goes through the hook, whichever syscall started it;
@@ -35,4 +34,4 @@ I also adopted CO-RE (`BPF_CORE_READ` against `vmlinux.h`), so one compiled bina
 
 The `file_open` hook only passes write opens (`O_WRONLY` or `O_RDWR`) and drops pseudo-filesystems like `/dev`, `/proc` and `/run` before anything reaches user space. Crossing from the kernel to user space is the expensive part, so the less that crosses, the better.
 
-Moving to LSM also gave me the problem that took the most time in this project: the rename and unlink hooks couldn't give me a full path. That's [part 4](/blog/ebpf-build-log-4/).
+Next I'm building the actual detection on top of these three hooks.

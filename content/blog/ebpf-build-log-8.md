@@ -7,7 +7,6 @@ tags: ["ebpf", "lsm", "entropy", "edr"]
 description: "Windowed indicators, checking file content after the write instead of before, auditing exclusions, and catching renames over existing files."
 ---
 
-*November 9 to 11, 2026.*
 
 The second assumption v1 made was that it knew what a process had written. Most of my false positives and most of the ways around the detector came from here.
 
@@ -21,13 +20,13 @@ Telling "newly created" from "rewritten" can't be done reliably from user space 
 
 ## Checking content after the write
 
-This was the question I'd left open in August. v1 checked a file's entropy when it was opened for writing, which is before the new bytes exist. An in-place overwrite was read while it still held plaintext, and one of my demos was only caught because Python's `"wb"` truncates the file first. It took one 4 KB sample from the start of the file against a fixed threshold, so encrypting only parts of a file stayed under it, and memory-mapped writes produced no event at all. The worker also opened the written path with a plain `os.Open`, which a FIFO can block forever.
+This was one of the questions I'd left open in v1. v1 checked a file's entropy when it was opened for writing, which is before the new bytes exist. An in-place overwrite was read while it still held plaintext, and one of my demos was only caught because Python's `"wb"` truncates the file first. It took one 4 KB sample from the start of the file against a fixed threshold, so encrypting only parts of a file stayed under it, and memory-mapped writes produced no event at all. The worker also opened the written path with a plain `os.Open`, which a FIFO can block forever.
 
 I needed to know when a file was written and when the writing was done.
 
 - Writes: `lsm/file_permission`, filtered to writes. It covers `write`, `pwrite`, `writev`, `splice` and io_uring, because they all go through the same permission check. I confirmed io_uring live with a test that makes zero write syscalls under strace. `bpf_d_path` isn't allowed in this hook, but the `bpf_path_d_path` kfunc (Linux 6.12) is allowed in every LSM hook, so I raised the minimum kernel to 6.12.
 - Memory-mapped writes: `lsm/mmap_file`, for shared writable mappings.
-- Done: `lsm/file_release`, when the file is closed for the last time. This was the fix I'd guessed at in August.
+- Done: `lsm/file_release`, when the file is closed for the last time. This was the fix I'd guessed at back in v1.
 
 Sending one event per write would be about 262,000 events per gigabyte written in 4 KB chunks. An LRU map in the kernel keyed by process and file sends only the first write and updates a timestamp for the rest. Writing 1 GB in 4 KB chunks deduped 262,265 writes while the agent saw single-digit events per second.
 
@@ -55,4 +54,4 @@ Ransomware doesn't have to delete anything. Writing ciphertext to `contract.pdf.
 
 `inode_rename` runs with the target already looked up, so if the target dentry has an inode, a regular file is about to be replaced. The event now carries that as a flag, plus the inode of the file being renamed. A new `inode_link` hook covers links. In user space, a rename moves the write record and its "encrypted" mark to the new name by inode, so whether the content verdict lands before or after the rename, the replace scores once, as the same loss as an encrypted copy plus a delete. An editor's atomic save (text renamed over the original) still scores 30.
 
-With this, the last of the known-bad tests from October passed.
+With this, the last of the known-bad tests from my first review passed.

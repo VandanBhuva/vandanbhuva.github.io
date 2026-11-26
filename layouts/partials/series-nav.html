@@ -1,12 +1,14 @@
-{{ with .Params.series }}
+{{ if gt .Weight 1 }}{{ with .Params.series }}
   {{ $current := $.Page }}
   {{ $parts := where (where site.RegularPages "Section" "blog") "Params.series" . }}
   <nav class="series" aria-label="Series">
     <p class="series-title">Build log series</p>
     <ol>
     {{ range $parts.ByWeight }}
+      {{ if le .Weight $current.Weight }}
       <li>{{ if eq . $current }}<span aria-current="page">{{ .Title | replaceRE "^.*?part \\d+: " "" }}</span>{{ else }}<a href="{{ .RelPermalink }}">{{ .Title | replaceRE "^.*?part \\d+: " "" }}</a>{{ end }}</li>
+      {{ end }}
     {{ end }}
     </ol>
   </nav>
-{{ end }}
+{{ end }}{{ end }}

@@ -7,7 +7,6 @@ tags: ["ebpf", "task-storage", "linux", "edr"]
 description: "Moving process identity into the kernel with task storage, seeding it with a task iterator, and making containment safe against PID reuse."
 ---
 
-*October 30 to November 9, 2026.*
 
 v1 identified processes by name and by PID, and both are weaker than they look. These three items are where BpfJailer's design helped most.
 

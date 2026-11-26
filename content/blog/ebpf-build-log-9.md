@@ -4,12 +4,11 @@ date: 2026-11-11T19:00:00-05:00
 weight: 9
 series: "ebpf-build-log"
 tags: ["ebpf", "benchmarking", "edr"]
-description: "Re-running the October baseline against both builds on the same day, what improved, what got worse, and what's still open."
+description: "Re-running the original baseline against both builds on the same day, what improved, what got worse, and what's still open."
 ---
 
-*November 11, 2026.*
 
-At the end of the first round of fixes I re-ran the October benchmark. I didn't compare against the October numbers alone, because the kernel had been updated and the VM now ran more background software, so the load generator itself ran faster than it did then. Instead I built both versions and ran them on fresh agents the same day. I tagged the result `phase1-done`.
+At the end of the first round of fixes I re-ran the original baseline benchmark. I didn't compare against the old numbers alone, because the kernel had been updated and the VM now ran more background software, so the load generator itself ran faster than it did then. Instead I built both versions and ran them on fresh agents the same day. I tagged the result `phase1-done`.
 
 ## What improved
 
@@ -33,4 +32,4 @@ Write-then-delete correlation still pairs files by name. Ransomware that gives i
 
 The bigger ideas from BpfJailer are still ahead: denying writes in the kernel for a process that's already scored HIGH instead of waiting to kill it, and protecting the agent itself. Right now, anyone with root can stop it.
 
-And the path problem from August was still there. Rename and unlink events still carried basenames joined to the process's working directory. It caused the churn false positive, the gnome-shell kill, and log lines that named the wrong directory. That's what I'm working on now.
+And the path problem from v1 was still there. Rename and unlink events still carried basenames joined to the process's working directory. It caused the churn false positive, the gnome-shell kill, and log lines that named the wrong directory. That's next, and after it, moving more of the processing into the kernel.
