@@ -1,6 +1,6 @@
 ---
 title: "Learning eBPF by building a ransomware detector, part 6: fixing the pipeline"
-date: 2026-11-25T10:06:00-05:00
+date: 2026-10-28T18:00:00-04:00
 weight: 6
 series: "ebpf-build-log"
 tags: ["ebpf", "ring-buffer", "go", "concurrency"]

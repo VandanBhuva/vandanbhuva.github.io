@@ -1,6 +1,6 @@
 ---
 title: "Learning eBPF by building a ransomware detector, part 2: moving to LSM hooks"
-date: 2026-11-25T10:02:00-05:00
+date: 2026-07-24T18:00:00-04:00
 weight: 2
 series: "ebpf-build-log"
 tags: ["ebpf", "linux", "lsm", "edr"]

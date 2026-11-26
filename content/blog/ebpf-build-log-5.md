@@ -1,6 +1,6 @@
 ---
 title: "Learning eBPF by building a ransomware detector, part 5: seeing how Meta does it"
-date: 2026-11-25T10:05:00-05:00
+date: 2026-10-26T18:00:00-04:00
 weight: 5
 series: "ebpf-build-log"
 tags: ["ebpf", "edr", "testing", "benchmarking"]
