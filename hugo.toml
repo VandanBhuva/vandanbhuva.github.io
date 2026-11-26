@@ -10,6 +10,7 @@ enableRobotsTXT = true
   tag = "tags"
 
 [params]
+  seriesNames = { "ebpf-build-log" = "eBPF ransomware detector" }
   # Shown on the home page and in <meta> tags.
   description = "Security engineer building kernel-level detection with eBPF, exploits, and secure systems. MS Information Security at Carnegie Mellon University."
   tagline = "Security engineer · eBPF detection · exploit development"

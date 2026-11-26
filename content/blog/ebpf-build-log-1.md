@@ -1,5 +1,5 @@
 ---
-title: "Learning eBPF by building a ransomware detector, part 1: from tutorials to first hooks"
+title: "Learning eBPF and getting my first file events out of the kernel"
 date: 2026-07-20T18:00:00-04:00
 weight: 1
 series: "ebpf-build-log"

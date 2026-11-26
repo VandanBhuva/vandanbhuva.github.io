@@ -1,5 +1,5 @@
 ---
-title: "Learning eBPF by building a ransomware detector, part 4: the path problem"
+title: "The path problem"
 date: 2026-09-08T19:00:00-04:00
 weight: 4
 series: "ebpf-build-log"

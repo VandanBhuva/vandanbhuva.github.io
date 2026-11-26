@@ -1,5 +1,5 @@
 ---
-title: "Learning eBPF by building a ransomware detector, part 10: back to the path problem"
+title: "Back to the path problem: walking the dentry tree"
 date: 2026-11-25T18:00:00-05:00
 weight: 10
 series: "ebpf-build-log"

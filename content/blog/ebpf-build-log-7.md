@@ -1,5 +1,5 @@
 ---
-title: "Learning eBPF by building a ransomware detector, part 7: which process is this?"
+title: "Which process is this?"
 date: 2026-11-09T18:00:00-05:00
 weight: 7
 series: "ebpf-build-log"
