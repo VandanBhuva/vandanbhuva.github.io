@@ -1,6 +1,6 @@
 ---
 title: "Learning eBPF by building a ransomware detector, part 3: the first detector"
-date: 2026-11-25T10:03:00-05:00
+date: 2026-09-08T18:00:00-04:00
 weight: 3
 series: "ebpf-build-log"
 tags: ["ebpf", "go", "edr", "siem"]

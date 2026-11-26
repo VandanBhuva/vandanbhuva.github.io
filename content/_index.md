@@ -9,8 +9,8 @@ Most of my work sits in the Linux kernel. I write eBPF programs that catch ranso
 **What I work on**
 
 - **Detection engineering with eBPF:** kernel-level EDR and network threat detection
-- **Offensive security:** exploit development, reverse engineering, penetration testing, CTFs (top 1% in Huntress CTF 2023 and 2024)
+- **Offensive security:** exploit development, reverse engineering, penetration testing, CTFs
 - **Applied cryptography research:** private access control for Function Secret Sharing (IEEE CCNC 2026 poster)
-- **Secure systems:** low-level C, distributed systems in Go, network security
+- **Secure systems:** low-level C, distributed systems in Go, network security, and embedded systems (I'm taking Introduction to Embedded Systems this semester)
 
-I'm looking for full-time security engineering roles starting in 2027.
+I'm looking for full-time roles in security engineering or security-focused software engineering, starting in 2027.

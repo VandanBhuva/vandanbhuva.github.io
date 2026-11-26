@@ -1,6 +1,6 @@
 ---
 title: "Learning eBPF by building a ransomware detector, part 8: what was actually written?"
-date: 2026-11-25T10:08:00-05:00
+date: 2026-11-11T18:00:00-05:00
 weight: 8
 series: "ebpf-build-log"
 tags: ["ebpf", "lsm", "entropy", "edr"]

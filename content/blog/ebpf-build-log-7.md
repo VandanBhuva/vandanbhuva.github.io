@@ -1,6 +1,6 @@
 ---
 title: "Learning eBPF by building a ransomware detector, part 7: which process is this?"
-date: 2026-11-25T10:07:00-05:00
+date: 2026-11-09T18:00:00-05:00
 weight: 7
 series: "ebpf-build-log"
 tags: ["ebpf", "task-storage", "linux", "edr"]

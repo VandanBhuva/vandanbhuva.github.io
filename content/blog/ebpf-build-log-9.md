@@ -1,6 +1,6 @@
 ---
 title: "Learning eBPF by building a ransomware detector, part 9: measuring phase one"
-date: 2026-11-25T10:09:00-05:00
+date: 2026-11-11T19:00:00-05:00
 weight: 9
 series: "ebpf-build-log"
 tags: ["ebpf", "benchmarking", "edr"]

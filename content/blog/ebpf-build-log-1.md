@@ -1,6 +1,6 @@
 ---
 title: "Learning eBPF by building a ransomware detector, part 1: from tutorials to first hooks"
-date: 2026-11-25T10:01:00-05:00
+date: 2026-07-20T18:00:00-04:00
 weight: 1
 series: "ebpf-build-log"
 tags: ["ebpf", "linux", "edr"]

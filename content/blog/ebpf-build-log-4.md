@@ -1,6 +1,6 @@
 ---
 title: "Learning eBPF by building a ransomware detector, part 4: the path problem"
-date: 2026-11-25T10:04:00-05:00
+date: 2026-09-08T19:00:00-04:00
 weight: 4
 series: "ebpf-build-log"
 tags: ["ebpf", "linux", "vfs"]
