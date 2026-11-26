@@ -1,37 +1,37 @@
 ---
-title: "eBPF ransomware monitor, part 1: getting events out of the kernel"
+title: "Learning eBPF by building a ransomware detector, part 1: from tutorials to first hooks"
 date: 2026-11-25T10:01:00-05:00
 weight: 1
 series: "ebpf-build-log"
 tags: ["ebpf", "linux", "edr"]
-description: "Starting a ransomware detector with syscall tracepoints, a BPF ring buffer and a Go agent."
+description: "How I learned eBPF from the eunomia tutorials and got file events out of the kernel into a Go agent."
 ---
 
-*July 16 to 20, 2026.* This series follows how I built the [eBPF Ransomware Behavior Monitor](/projects/ebpf-ransomware-monitor/), a Linux agent that detects ransomware from its behavior and stops it mid-attack. It's reconstructed from the project's 63 commits, README and benchmarks (July 16 to November 11), plus my own notes. The project ran in two bursts: a fast build in July and August, then a measure-and-harden pass from late October.
+This series is how I learned eBPF by building the [eBPF Ransomware Behavior Monitor](/projects/ebpf-ransomware-monitor/), a Linux agent that spots ransomware from what it does to files and stops it mid-attack. I've written it in the order things happened, including the parts where my first design turned out to be wrong.
 
-| Dates | Part | Outcome |
+| Part | Dates | What happened |
 | --- | --- | --- |
-| Jul 16 to 20 | 1. First hooks, ring buffer, Go agent | Events flowing from kernel to a Go agent |
-| Jul 24 to 27 | 2. LSM hooks, detection engine, kill switch | Scoring engine with SIGSTOP, snapshot, SIGKILL |
-| Aug 13 to Sep 8 | 3. Logging, Datadog, worker pool, first benchmarks | JSON logs into Datadog, 32-worker pipeline |
-| Oct 25 to 28 | 4. Re-measurement | Found 77% of events lost silently under load |
-| Oct 30 to Nov 9 | 5. Process identity, PID reuse, windowed indicators | Name spoofing and PID reuse no longer evade or misfire |
-| Nov 9 to 11 | 6. Content check rewrite, exclusion audit | False positives down from 6/12 runs to 0/24 |
+| 1. Tutorials to first hooks | early Jul to Jul 20 | Learned eBPF, got file events into a Go agent |
+| 2. LSM hooks and the first detector | Jul 24 to Sep 8 | Moved to LSM, built scoring and the kill path |
+| 3. The path problem | Jul to Aug | Rename and unlink hooks couldn't give me full paths |
+| 4. Seeing how Meta does it | Oct 25 to 28 | SysArmor and BpfJailer showed me what my design was missing |
+| 5. Working through the checklist | Oct 30 to Nov 11 | Process identity, content checks, false positives 6/12 to 0/24 |
+| 6. Back to paths | now | Walking the dentry tree to resolve full paths |
 
-I had no summer internship, so the summer went into this project. From August 19 to October 25 I paused it to focus on the fall semester.
+## Learning eBPF first
 
-## Picking the project
-
-In early July I started reading about eBPF: what it is, what it does, and how it's used for security. I wanted a security project built on it. Claude suggested a few ideas, and I picked ransomware detection rather than going deeper into network security, which I'd already touched with a small [eBPF network threat detector](/projects/network-threat-detector/). I wrote this first version by hand.
+I started in early July with no eBPF experience. I worked through the eunomia eBPF tutorials to learn the basics: what an eBPF program is, how it gets loaded and verified, how maps and ring buffers move data between the kernel and user space, and where programs can attach. I'd already used it a little for a small [network threat detector](/projects/network-threat-detector/), and I wanted a bigger security project that went into the file system instead. Ransomware detection fit: ransomware has a very recognizable pattern of file activity, and seeing file activity is exactly what eBPF is good at.
 
 ## The plumbing
 
-I started with the toolchain, a `vmlinux.h` generated from the running kernel's BTF, and instructions for compiling and loading a BPF program. My first README planned kprobes or tracepoints. I went with syscall tracepoints, because they're the easiest way to watch file activity.
+Before any detection logic I needed a working toolchain: a `vmlinux.h` generated from the running kernel's BTF so my C code could use kernel types, and a repeatable way to compile and load a BPF program.
 
-- **Jul 18:** tracepoints on `sys_enter_openat`, then `sys_enter_renameat2` to see file modifications.
-- **Jul 19:** a BPF ring buffer to carry events to user space.
-- **Jul 20:** the Go agent, using `bpf2go` bindings to load the program and poll the ring buffer.
+For hooks, I started with syscall tracepoints. They were the easiest way to see file activity while I was still learning.
+
+- **Jul 18:** tracepoints on `sys_enter_openat`, then `sys_enter_renameat2` to see files being modified.
+- **Jul 19:** a BPF ring buffer to carry events to user space. A ring buffer keeps events in order and lets the kernel side reserve space for an event before filling it in.
+- **Jul 20:** a Go agent using `bpf2go`, which generates Go bindings for the BPF objects so the agent can load the program and read the ring buffer without hand-written glue.
 
 ## First bug
 
-My first real bug was in string handling. Filenames came across as fixed-size C arrays, and Go printed whatever followed the terminator. Parsing null-terminated strings properly fixed it. A version of this bug came back in October ([part 4](/blog/ebpf-build-log-4/)).
+The first real bug was in string handling. Filenames come across as fixed-size C arrays, and Go printed everything in the array, including whatever bytes sat after the null terminator. Parsing the strings up to the terminator fixed it. A related bug came back in October, when I found the kernel side was sending stale bytes too ([part 4](/blog/ebpf-build-log-4/)).

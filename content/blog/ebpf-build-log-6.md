@@ -1,31 +1,26 @@
 ---
-title: "eBPF ransomware monitor, part 6: checking what was actually written"
+title: "Learning eBPF by building a ransomware detector, part 6: back to the path problem"
 date: 2026-11-25T10:06:00-05:00
 weight: 6
 series: "ebpf-build-log"
-tags: ["ebpf", "linux", "lsm", "edr"]
-description: "Rewriting the content check around write and close hooks took false positives from 6 of 12 runs to 0 of 24."
+tags: ["ebpf", "linux", "vfs"]
+description: "BpfJailer hit the same path resolution problem. What I'm working on now: walking the dentry tree to resolve full paths."
 ---
 
-*November 9 to 11, 2026.*
+*November 2026, in progress.*
 
-The entropy check read a file when it was opened for writing, before the new bytes existed. An in-place `O_RDWR` overwrite was read as its old plaintext, `mmap` writes produced no event at all, and a FIFO opened by a worker could block it forever.
+The path problem from [part 3](/blog/ebpf-build-log-3/) is still open, and it's what I'm working on now.
 
-## The rewrite
+Watching the BpfJailer talk was reassuring here, because they ran into the same limitation. It comes from how the hooks are designed. The `inode_*` LSM hooks don't get the mount, so there is no `struct path` to resolve, and `bpf_d_path` can't help.
 
-The rewrite added three kernel hooks: `file_permission` for writes (covering `write`, `pwrite`, `writev`, `splice` and io_uring), `mmap_file` for shared writable mappings, and `file_release` for the final close. The agent now reads a file's "before" state at open and its "after" state at close.
+## The approach I'm taking
 
-It checks the format first (a PDF or zip that lost its header, or text that stopped being text), then looks for an entropy rise at the same offset, and finally tests for near-uniform content with entropy plus a chi-square test. Compressed output keeps a valid header, so `gzip`, `xz` and `zstd` pass. `test/write_path.py` covers 14 live cases, including a raw-syscall io_uring encryptor.
+Instead of relying on `/proc/<pid>/cwd`, I'm walking the dentry tree in the kernel:
 
-## Two more fixes
+1. Starting from the dentry the hook gives me, follow the parent dentries up toward the root, reading each name.
+2. Stop at a fixed depth, since the BPF verifier only accepts bounded loops.
+3. Resolve the mount in user space, so the agent can place that chain of names in the real file system tree, including for containers.
 
-- **Exclusion audit.** Blanket skips for databases and paths like `/snap/` were attack surface, since the attacker picks the file name. They were removed, and the desktop session was added to the protected list after the November 9 kill of `gnome-shell`.
-- **Rename over a file.** Renaming ciphertext onto an existing file destroys it without an unlink. Rename and link events now carry the inode, so that case and "link then delete" both correlate.
+The tradeoff is size. Sending a chain of names makes every rename and delete event bigger, and I spent part 4 learning how easy it is to overflow the ring buffer. So it has to be measured against the same baseline as everything else, with every dropped event counted.
 
-## Results
-
-Re-running the baseline on the same day against both builds showed no regression in files preserved (outbreak median 985 vs 983.5 of 1,000) and false positives down from 6 of 12 runs to 0 of 24. Every lost event is now counted, where the baseline lost up to 64% silently. I tagged this `phase1-done`.
-
-## What's next
-
-The code hasn't changed since November 11. The next round moves from killing a process after detection to blocking its writes in the kernel, followed by a final benchmark comparing every version. I'll write that up when it's done.
+I'll write up how it goes when it's done.
