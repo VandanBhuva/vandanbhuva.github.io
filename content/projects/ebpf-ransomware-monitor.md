@@ -10,6 +10,8 @@ links:
 ---
 
 > Current main focus. This project is under active development.
+>
+> How I built it, problem by problem: [read the build log series](/blog/ebpf-build-log-1/).
 
 A Linux endpoint detection and response (EDR) agent that watches process behavior from inside the kernel using eBPF programs attached to Linux Security Module (LSM) hooks. It scores each process by its behavior instead of matching signatures, kills it once the score crosses a threshold, and sends telemetry to a Datadog SIEM.
 
